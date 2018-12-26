@@ -1,15 +1,15 @@
-# AlpineWSL
-Alpine Linux on WSL (Windows 10 FCU or later)
-based on [wsldl](https://github.com/yuk7/wsldl)
+# VoidWSL
+Void Linux on WSL (Windows 10 FCU or later) based on [wsldl](https://github.com/yuk7/wsldl).
+This project is based on Voild Linux musl-libc. For musl-libc, visit https://git.io/voidmuslwsl.
 
 ![screenshot](https://raw.githubusercontent.com/wiki/yuk7/wsldl/img/Arch_Alpine_Ubuntu.png)
 
-[![Build Status](https://img.shields.io/travis/yuk7/AlpineWSL.svg?style=flat-square)](https://travis-ci.org/yuk7/AlpineWSL)
-[![Github All Releases](https://img.shields.io/github/downloads/yuk7/AlpineWSL/total.svg?style=flat-square)](https://github.com/yuk7/AlpineWSL/releases/latest)
+[![Build Status](https://img.shields.io/travis/am11/VoidWSL.svg?style=flat-square)](https://travis-ci.org/am11/VoidWSL)
+[![Github All Releases](https://img.shields.io/github/downloads/am11/VoidWSL/total.svg?style=flat-square)](https://github.com/am11/VoidWSL/releases/latest)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-![License](https://img.shields.io/github/license/yuk7/AlpineWSL.svg?style=flat-square)
+![License](https://img.shields.io/github/license/am11/VoidWSL.svg?style=flat-square)
 
-### [Download](https://github.com/yuk7/AlpineWSL/releases/latest)
+### [Download](https://github.com/am11/VoidWSL/releases/latest)
 
 
 ## Requirements
@@ -17,11 +17,11 @@ based on [wsldl](https://github.com/yuk7/wsldl)
 * Windows Subsystem for Linux feature is enabled.
 
 ## Install
-#### 1. [Download](https://github.com/yuk7/AlpineWSL/releases/latest) installer zip
+#### 1. [Download](https://github.com/am11/VoidWSL/releases/latest) installer zip
 
 #### 2. Extract all files in zip file to same directory
 
-#### 3.Run Alpine.exe to Extract rootfs and Register to WSL
+#### 3.Run Void.exe to Extract rootfs and Register to WSL
 Exe filename is using to the instance name to register.
 If you rename it you can register with a diffrent name and have multiple installs.
 
@@ -29,7 +29,7 @@ If you rename it you can register with a diffrent name and have multiple install
 ## How-to-Use(for Installed Instance)
 #### exe Usage
 ```dos
-Useage :
+Usage :
     <no args>
       - Launches the distro's default behavior. By default, this launches your default shell.
 
@@ -58,12 +58,12 @@ Useage :
 
 #### How to uninstall instance
 ```dos
->Alpine.exe clean
+>Void.exe clean
 
 ```
 
 ## How-to-Build
-AlpineWSL can build on GNU/Linux or WSL.
+VoidWSL can build on GNU/Linux or WSL.
 
 `curl`,`zip`,`unzip`,`tar`(gnu) and `sudo` is required for build.
 ```shell
