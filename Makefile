@@ -26,7 +26,7 @@ rootfs.tar.gz: rootfs
 rootfs: base.tar.xz
 	@echo -e '\e[1;31mBuilding rootfs...\e[m'
 	mkdir rootfs
-	sudo tar -xpf base.tar.xz -C rootfs
+	sudo tar -xpmf base.tar.xz -C rootfs
 	sudo cp -f /etc/resolv.conf rootfs/etc/resolv.conf
 	sudo chroot rootfs /sbin/xbps-install --sync --update --yes
 	sudo find rootfs/var/cache/xbps/ -type f -delete
