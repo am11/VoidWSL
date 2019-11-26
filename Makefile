@@ -8,15 +8,13 @@ LNCR_ZIP_EXE=Void.exe
 all: $(OUT_ZIP)
 
 zip: $(OUT_ZIP)
-$(OUT_ZIP): ziproot
-	@echo -e '\e[1;31mBuilding $(OUT_ZIP)\e[m'
-	cd ziproot; zip ../$(OUT_ZIP) *
 
-ziproot: Launcher.exe rootfs.tar.gz
-	@echo -e '\e[1;31mBuilding ziproot...\e[m'
-	mkdir ziproot
-	cp Launcher.exe ziproot/${LNCR_EXE}
-	cp rootfs.tar.gz ziproot/
+$(OUT_ZIP): $(LNCR_EXE) rootfs.tar.gz
+	@echo -e '\e[1;31mBuilding $(OUT_ZIP)\e[m'
+	zip $(OUT_ZIP) $(LNCR_EXE) rootfs.tar.gz
+
+$(LNCR_EXE): Launcher.exe
+	cp Launcher.exe $(LNCR_EXE)
 
 exe: Launcher.exe
 Launcher.exe: icons.zip
@@ -50,7 +48,6 @@ base.tar.xz:
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
 	rm -f ${OUT_ZIP}
-	rm -fr ziproot
 	rm -f Launcher.exe
 	rm -f icons.zip
 	rm -f rootfs.tar.gz
