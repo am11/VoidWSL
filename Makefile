@@ -1,8 +1,6 @@
 OUT_ZIP=Void.zip
 LNCR_EXE=Void.exe
 
-DLR=curl
-DLR_FLAGS=-L
 BASE_URL=http://alpha.de.repo.voidlinux.org/live/20190526/void-x86_64-ROOTFS-20190526.tar.xz
 LNCR_ZIP_URL=https://github.com/yuk7/wsldl/releases/download/19022600/icons.zip
 LNCR_ZIP_EXE=Void.exe
@@ -28,7 +26,7 @@ Launcher.exe: icons.zip
 
 icons.zip:
 	@echo -e '\e[1;31mDownloading icons.zip...\e[m'
-	$(DLR) $(DLR_FLAGS) $(LNCR_ZIP_URL) -o icons.zip
+	curl -LSfs $(LNCR_ZIP_URL) -o icons.zip
 
 rootfs.tar.gz: rootfs
 	@echo -e '\e[1;31mBuilding rootfs.tar.gz...\e[m'
@@ -47,7 +45,7 @@ rootfs: base.tar.xz
 
 base.tar.xz:
 	@echo -e '\e[1;31mDownloading base.tar.xz...\e[m'
-	$(DLR) $(DLR_FLAGS) $(BASE_URL) -o base.tar.xz
+	curl -LSfs $(BASE_URL) -o base.tar.xz
 
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
