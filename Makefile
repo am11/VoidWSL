@@ -51,10 +51,10 @@ base.tar.xz:
 
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
-	-rm ${OUT_ZIP}
-	-rm -r ziproot
-	-rm Launcher.exe
-	-rm icons.zip
-	-rm rootfs.tar.gz
-	-sudo rm -r rootfs
-	-rm base.tar.xz
+	rm -f ${OUT_ZIP}
+	rm -fr ziproot
+	rm -f Launcher.exe
+	rm -f icons.zip
+	rm -f rootfs.tar.gz
+	sudo rm -fr rootfs
+	rm -f base.tar.xz
