@@ -21,8 +21,7 @@ icons.zip:
 
 rootfs.tar.gz: rootfs
 	@echo -e '\e[1;31mBuilding rootfs.tar.gz...\e[m'
-	cd rootfs; sudo tar -zcpf ../rootfs.tar.gz `sudo ls`
-	sudo chown `id -un` rootfs.tar.gz
+	sudo tar -zcp > rootfs.tar.gz -C rootfs .
 
 rootfs: base.tar.xz
 	@echo -e '\e[1;31mBuilding rootfs...\e[m'
@@ -30,7 +29,7 @@ rootfs: base.tar.xz
 	sudo tar -xpf base.tar.xz -C rootfs
 	sudo cp -f /etc/resolv.conf rootfs/etc/resolv.conf
 	sudo chroot rootfs /sbin/xbps-install --sync --update --yes
-	sudo rm -rf `sudo find rootfs/var/cache/xbps/ -type f`
+	sudo find rootfs/var/cache/xbps/ -type f -delete
 	sudo rm rootfs/etc/resolv.conf
 	sudo chmod +x rootfs
 
