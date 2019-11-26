@@ -1,26 +1,19 @@
 OUT_ZIP=Void.zip
-LNCR_EXE=Void.exe
 
 BASE_URL=http://alpha.de.repo.voidlinux.org/live/20190526/void-x86_64-ROOTFS-20190526.tar.xz
 LNCR_ZIP_URL=https://github.com/yuk7/wsldl/releases/download/19022600/icons.zip
-LNCR_ZIP_EXE=Void.exe
 
 all: $(OUT_ZIP)
 
 zip: $(OUT_ZIP)
 
-$(OUT_ZIP): $(LNCR_EXE) rootfs.tar.gz
+$(OUT_ZIP): Void.exe rootfs.tar.gz
 	@echo -e '\e[1;31mBuilding $(OUT_ZIP)\e[m'
-	zip $(OUT_ZIP) $(LNCR_EXE) rootfs.tar.gz
+	zip $(OUT_ZIP) Void.exe rootfs.tar.gz
 
-$(LNCR_EXE): Launcher.exe
-	cp Launcher.exe $(LNCR_EXE)
-
-exe: Launcher.exe
-Launcher.exe: icons.zip
-	@echo -e '\e[1;31mExtracting Launcher.exe...\e[m'
-	unzip icons.zip $(LNCR_ZIP_EXE)
-	mv $(LNCR_ZIP_EXE) Launcher.exe
+Void.exe: icons.zip
+	@echo -e '\e[1;31mExtracting Void.exe...\e[m'
+	unzip icons.zip Void.exe
 
 icons.zip:
 	@echo -e '\e[1;31mDownloading icons.zip...\e[m'
@@ -48,7 +41,7 @@ base.tar.xz:
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
 	rm -f ${OUT_ZIP}
-	rm -f Launcher.exe
+	rm -f Void.exe
 	rm -f icons.zip
 	rm -f rootfs.tar.gz
 	sudo rm -fr rootfs
