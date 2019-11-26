@@ -1,7 +1,5 @@
 TAR=bsdtar
 
-OUT_ZIP=Void.zip
-
 # WARNING: the 20191109 snapshot is broken and fails to update:
 #
 # sudo chroot rootfs /sbin/xbps-install --sync --update --yes xbps
@@ -17,13 +15,13 @@ OUT_ZIP=Void.zip
 BASE_URL=http://alpha.de.repo.voidlinux.org/live/20190526/void-x86_64-ROOTFS-20190526.tar.xz
 LNCR_ZIP_URL=https://github.com/yuk7/wsldl/releases/download/19022600/icons.zip
 
-all: $(OUT_ZIP)
+all: Void.zip
 
-zip: $(OUT_ZIP)
+zip: Void.zip
 
-$(OUT_ZIP): Void.exe rootfs.tar.gz
-	@echo -e '\e[1;31mBuilding $(OUT_ZIP)\e[m'
-	$(TAR) -caf $(OUT_ZIP) Void.exe rootfs.tar.gz
+Void.zip: Void.exe rootfs.tar.gz
+	@echo -e '\e[1;31mBuilding Void.zip\e[m'
+	$(TAR) -caf Void.zip Void.exe rootfs.tar.gz
 
 Void.exe: icons.zip
 	@echo -e '\e[1;31mExtracting Void.exe...\e[m'
@@ -54,7 +52,7 @@ base.tar.xz:
 
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
-	rm -f ${OUT_ZIP}
+	rm -f Void.zip
 	rm -f Void.exe
 	rm -f icons.zip
 	rm -f rootfs.tar.gz
