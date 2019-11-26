@@ -19,7 +19,7 @@ Void.exe: icons.zip
 
 icons.zip:
 	@echo -e '\e[1;31mDownloading icons.zip...\e[m'
-	curl -LSfs $(LNCR_ZIP_URL) -o icons.zip
+	curl -LSfs -o icons.zip $(LNCR_ZIP_URL)
 
 rootfs.tar.gz: rootfs
 	@echo -e '\e[1;31mBuilding rootfs.tar.gz...\e[m'
@@ -37,7 +37,7 @@ rootfs: base.tar.xz
 
 base.tar.xz:
 	@echo -e '\e[1;31mDownloading base.tar.xz...\e[m'
-	curl -LSfs $(BASE_URL) -o base.tar.xz
+	curl -LSfs -o base.tar.xz $(BASE_URL)
 
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
