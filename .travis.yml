@@ -5,7 +5,7 @@ before_script:
 - sudo apt-get update -qq
 - sudo apt-get install make curl bsdtar check -qq
 script:
-- make
+- env LANG=en_US.UTF-8 make
 notifications:
   email: false
 deploy:
