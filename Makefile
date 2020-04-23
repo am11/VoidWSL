@@ -1,60 +1,60 @@
-OUT_ZIP=Void.zip
-LNCR_EXE=Void.exe
+TAR=bsdtar
 
-DLR=curl
-DLR_FLAGS=-L
+# WARNING: the 20191109 snapshot is broken and fails to update:
+#
+# sudo chroot rootfs /sbin/xbps-install --sync --update --yes xbps
+# [*] Updating `https://alpha.de.repo.voidlinux.org/current/x86_64-repodata' ...
+# x86_64-repodata: 1947KB [avg rate: 5979KB/s]
+# libcrypto45-3.0.2_2 (update) breaks installed pkg `libressl-2.9.2_1'
+# libcrypto45-3.0.2_2 (update) breaks installed pkg `libtls19-2.9.2_1'
+# libssl47-3.0.2_2 (update) breaks installed pkg `libressl-2.9.2_1'
+# libssl47-3.0.2_2 (update) breaks installed pkg `libtls19-2.9.2_1'
+# Transaction aborted due to unresolved dependencies.
+# make: *** [Makefile:31: rootfs] Error 19
+
 BASE_URL=http://alpha.de.repo.voidlinux.org/live/20190526/void-x86_64-ROOTFS-20190526.tar.xz
 LNCR_ZIP_URL=https://github.com/yuk7/wsldl/releases/download/19022600/icons.zip
-LNCR_ZIP_EXE=Void.exe
 
-all: $(OUT_ZIP)
+all: Void.zip
 
-zip: $(OUT_ZIP)
-$(OUT_ZIP): ziproot
-	@echo -e '\e[1;31mBuilding $(OUT_ZIP)\e[m'
-	cd ziproot; zip ../$(OUT_ZIP) *
+zip: Void.zip
 
-ziproot: Launcher.exe rootfs.tar.gz
-	@echo -e '\e[1;31mBuilding ziproot...\e[m'
-	mkdir ziproot
-	cp Launcher.exe ziproot/${LNCR_EXE}
-	cp rootfs.tar.gz ziproot/
+Void.zip: Void.exe rootfs.tar.gz
+	@echo -e '\e[1;31mBuilding Void.zip\e[m'
+	$(TAR) -caf Void.zip Void.exe rootfs.tar.gz
 
-exe: Launcher.exe
-Launcher.exe: icons.zip
-	@echo -e '\e[1;31mExtracting Launcher.exe...\e[m'
-	unzip icons.zip $(LNCR_ZIP_EXE)
-	mv $(LNCR_ZIP_EXE) Launcher.exe
+Void.exe: icons.zip
+	@echo -e '\e[1;31mExtracting Void.exe...\e[m'
+	$(TAR) -xf icons.zip Void.exe
 
 icons.zip:
 	@echo -e '\e[1;31mDownloading icons.zip...\e[m'
-	$(DLR) $(DLR_FLAGS) $(LNCR_ZIP_URL) -o icons.zip
+	curl -LSfs -o icons.zip $(LNCR_ZIP_URL)
 
 rootfs.tar.gz: rootfs
 	@echo -e '\e[1;31mBuilding rootfs.tar.gz...\e[m'
-	cd rootfs; sudo tar -zcpf ../rootfs.tar.gz `sudo ls`
-	sudo chown `id -un` rootfs.tar.gz
+	sudo $(TAR) -czpf - > rootfs.tar.gz -C rootfs .
 
 rootfs: base.tar.xz
 	@echo -e '\e[1;31mBuilding rootfs...\e[m'
 	mkdir rootfs
-	sudo tar -xpf base.tar.xz -C rootfs
+	sudo $(TAR) -xpmf base.tar.xz -C rootfs
 	sudo cp -f /etc/resolv.conf rootfs/etc/resolv.conf
-	sudo chroot rootfs /sbin/xbps-install --sync --update --yes
-	sudo rm -rf `sudo find rootfs/var/cache/xbps/ -type f`
+	sudo chroot rootfs /sbin/xbps-install --sync --update --yes xbps
+	sudo chroot rootfs /sbin/xbps-install --update --yes
+	sudo find rootfs/var/cache/xbps/ -type f -delete
 	sudo rm rootfs/etc/resolv.conf
 	sudo chmod +x rootfs
 
 base.tar.xz:
 	@echo -e '\e[1;31mDownloading base.tar.xz...\e[m'
-	$(DLR) $(DLR_FLAGS) $(BASE_URL) -o base.tar.xz
+	curl -LSfs -o base.tar.xz $(BASE_URL)
 
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
-	-rm ${OUT_ZIP}
-	-rm -r ziproot
-	-rm Launcher.exe
-	-rm icons.zip
-	-rm rootfs.tar.gz
-	-sudo rm -r rootfs
-	-rm base.tar.gz
+	rm -f Void.zip
+	rm -f Void.exe
+	rm -f icons.zip
+	rm -f rootfs.tar.gz
+	sudo rm -fr rootfs
+	rm -f base.tar.xz

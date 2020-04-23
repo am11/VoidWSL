@@ -65,7 +65,7 @@ Usage :
 ## How-to-Build
 VoidWSL can build on GNU/Linux or WSL.
 
-`curl`,`zip`,`unzip`,`tar`(gnu) and `sudo` is required for build.
+`curl`, `bsdtar` and `sudo` are required for build.
 ```shell
 $ make
 ```
