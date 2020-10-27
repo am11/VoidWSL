@@ -1,0 +1,32 @@
+name: Main CI Workflow
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+    tags: '*'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        run: |
+          BRANCH_OR_TAG=${GITHUB_REF#refs/heads/}
+          BRANCH_OR_TAG=${BRANCH_OR_TAG#refs/tags/}
+          git clone --single-branch --branch $BRANCH_OR_TAG --depth 1 https://${{ secrets.CLONE_TOKEN }}:x-oauth-basic@github.com/${{ github.repository }}.git .
+      - name: Cleanup
+        run: sudo rm -rf "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY"
+      - name: Install prerequisites
+        run: sudo apt install make curl zip unzip check -qq
+      - name: Build
+        run: make
+      - name: Upload artifacts
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          artifacts="-a ./Void.zip"
+          tag_name="${GITHUB_REF#refs/tags/}"
+          hub release create $artifacts -m "$tag_name" "$tag_name"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
