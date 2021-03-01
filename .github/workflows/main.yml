@@ -11,18 +11,8 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        run: |
-          INITIAL_REF=$GITHUB_REF
-          REPO=${{ github.repository }}
-          PR_REPO=${{ github.event.pull_request.head.repo.full_name }}
-          if [ -n "$PR_REPO" ]; then
-            INITIAL_REF=$GITHUB_BASE_REF
-            REPO=$PR_REPO
-          fi
-          BRANCH_OR_TAG=${INITIAL_REF#refs/heads/}
-          BRANCH_OR_TAG=${BRANCH_OR_TAG#refs/tags/}
-          git clone --single-branch --branch $BRANCH_OR_TAG --depth 1 https://${{ secrets.CLONE_TOKEN }}:x-oauth-basic@github.com/$REPO.git .
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Cleanup
         run: sudo rm -rf "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY"
       - name: Install prerequisites
