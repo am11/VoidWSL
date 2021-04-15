@@ -3,7 +3,7 @@ LNCR_EXE=Void.exe
 
 DLR=curl
 DLR_FLAGS=-L
-BASE_URL=http://alpha.de.repo.voidlinux.org/live/20210218/void-x86_64-ROOTFS-20210218.tar.xz
+BASE_URL=https://alpha.de.repo.voidlinux.org/live/20210316/void-x86_64-ROOTFS-20210316.tar.xz
 LNCR_ZIP_URL=https://github.com/yuk7/wsldl/releases/download/21020500/icons.zip
 LNCR_ZIP_EXE=Void.exe
 
