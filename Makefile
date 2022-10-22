@@ -1,5 +1,3 @@
-LNCR_EXE=Void.exe
-
 DLR=curl
 DLR_FLAGS=-L
 
@@ -33,7 +31,7 @@ endef
 define prepare-ziproot =
 @echo -e '\e[1;31mPreparing $@...\e[m'
 mkdir $@
-cp Launcher.exe $@/${LNCR_EXE}
+cp $(word 2,$^) $@/
 cp $< $@/rootfs.tar.gz
 endef
 
@@ -53,10 +51,10 @@ VoidGlibc.zip: ziproot-glibc
 VoidMusl.zip: ziproot-musl
 	$(pack-zip)
 
-ziproot-glibc: rootfs-glibc.tar.gz Launcher.exe
+ziproot-glibc: rootfs-glibc.tar.gz void-glibc.exe
 	$(prepare-ziproot)
 
-ziproot-musl: rootfs-musl.tar.gz Launcher.exe
+ziproot-musl: rootfs-musl.tar.gz void-musl.exe
 	$(prepare-ziproot)
 
 rootfs-glibc.tar.gz: rootfs-glibc
@@ -79,11 +77,16 @@ base-musl.tar.xz:
 	@echo -e '\e[1;31mDownloading $@...\e[m'
 	$(DLR) $(DLR_FLAGS) $(VOID_MUSL_URL) -o $@
 
-exe: Launcher.exe
-Launcher.exe: icons.zip
+exe: void-glibc.exe void-musl.exe
+$(LNCR_ZIP_EXE): icons.zip
 	@echo -e '\e[1;31mExtracting $@...\e[m'
-	unzip $< $(LNCR_ZIP_EXE)
-	mv $(LNCR_ZIP_EXE) $@
+	unzip $< $@
+
+void-glibc.exe: $(LNCR_ZIP_EXE)
+	@cp $(LNCR_ZIP_EXE) $@
+
+void-musl.exe: $(LNCR_ZIP_EXE)
+	@cp $(LNCR_ZIP_EXE) $@
 
 icons.zip:
 	@echo -e '\e[1;31mDownloading $@...\e[m'
@@ -96,5 +99,6 @@ clean:
 	-rm rootfs-glibc.tar.gz rootfs-musl.tar.gz
 	-sudo rm -r rootfs-glibc rootfs-musl
 	-rm base-glibc.tar.xz base-musl.tar.xz
-	-rm Launcher.exe
+	-rm void-glibc.exe void-musl.exe
+	-rm $(LNCR_ZIP_EXE)
 	-rm icons.zip
