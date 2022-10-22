@@ -1,61 +1,100 @@
-OUT_ZIP=Void.zip
 LNCR_EXE=Void.exe
 
 DLR=curl
 DLR_FLAGS=-L
-IMG_REVISION=20221001
-BASE_URL=https://repo-default.voidlinux.org/live/$(IMG_REVISION)/void-x86_64-ROOTFS-$(IMG_REVISION).tar.xz
+
+VOID_REVISION=20221001
+BASE_URL=https://repo-default.voidlinux.org/live/$(VOID_REVISION)
+VOID_GLIBC_ROOTFS=void-x86_64-ROOTFS-$(VOID_REVISION).tar.xz
+VOID_MUSL_ROOTFS=void-x86_64-musl-ROOTFS-$(VOID_REVISION).tar.xz
+VOID_GLIBC_URL=$(BASE_URL)/$(VOID_GLIBC_ROOTFS)
+VOID_MUSL_URL=$(BASE_URL)/$(VOID_MUSL_ROOTFS)
+
 LNCR_ZIP_URL=https://github.com/yuk7/wsldl/releases/download/22020900/icons.zip
 LNCR_ZIP_EXE=Void.exe
 
-all: $(OUT_ZIP)
+define prepare-rootfs =
+@echo -e '\e[1;31mPreparing $@...\e[m'
+mkdir $@
+sudo tar -xpf $< -C $@
+sudo cp -f /etc/resolv.conf $@/etc/resolv.conf
+sudo chroot $@ /sbin/xbps-install --sync --update --yes
+sudo rm -rf `sudo find $@/var/cache/xbps/ -type f`
+sudo rm $@/etc/resolv.conf
+sudo chmod +x $@
+endef
 
-zip: $(OUT_ZIP)
-$(OUT_ZIP): ziproot
-	@echo -e '\e[1;31mBuilding $(OUT_ZIP)\e[m'
-	cd ziproot; zip ../$(OUT_ZIP) *
+define pack-rootfs-tarball =
+@echo -e '\e[1;31mPacking $@...\e[m'
+cd $<; sudo tar -zcpf ../$@ `sudo ls`
+sudo chown `id -un` $@
+endef
 
-ziproot: Launcher.exe rootfs.tar.gz
-	@echo -e '\e[1;31mBuilding ziproot...\e[m'
-	mkdir ziproot
-	cp Launcher.exe ziproot/${LNCR_EXE}
-	cp rootfs.tar.gz ziproot/
+define prepare-ziproot =
+@echo -e '\e[1;31mPreparing $@...\e[m'
+mkdir $@
+cp Launcher.exe $@/${LNCR_EXE}
+cp $< $@/rootfs.tar.gz
+endef
+
+define pack-zip =
+@echo -e '\e[1;31mPacking $@\e[m'
+cd $<; zip ../$@ *
+endef
+
+all: zip
+
+.PHONY: all zip exe clean
+zip: VoidGlibc.zip VoidMusl.zip
+
+VoidGlibc.zip: ziproot-glibc
+	$(pack-zip)
+
+VoidMusl.zip: ziproot-musl
+	$(pack-zip)
+
+ziproot-glibc: rootfs-glibc.tar.gz Launcher.exe
+	$(prepare-ziproot)
+
+ziproot-musl: rootfs-musl.tar.gz Launcher.exe
+	$(prepare-ziproot)
+
+rootfs-glibc.tar.gz: rootfs-glibc
+	$(pack-rootfs-tarball)
+
+rootfs-musl.tar.gz: rootfs-musl
+	$(pack-rootfs-tarball)
+
+rootfs-glibc: base-glibc.tar.xz
+	$(prepare-rootfs)
+
+rootfs-musl: base-musl.tar.xz
+	$(prepare-rootfs)
+
+base-glibc.tar.xz:
+	@echo -e '\e[1;31mDownloading $@...\e[m'
+	$(DLR) $(DLR_FLAGS) $(VOID_GLIBC_URL) -o $@
+
+base-musl.tar.xz:
+	@echo -e '\e[1;31mDownloading $@...\e[m'
+	$(DLR) $(DLR_FLAGS) $(VOID_MUSL_URL) -o $@
 
 exe: Launcher.exe
 Launcher.exe: icons.zip
-	@echo -e '\e[1;31mExtracting Launcher.exe...\e[m'
-	unzip icons.zip $(LNCR_ZIP_EXE)
-	mv $(LNCR_ZIP_EXE) Launcher.exe
+	@echo -e '\e[1;31mExtracting $@...\e[m'
+	unzip $< $(LNCR_ZIP_EXE)
+	mv $(LNCR_ZIP_EXE) $@
 
 icons.zip:
-	@echo -e '\e[1;31mDownloading icons.zip...\e[m'
-	$(DLR) $(DLR_FLAGS) $(LNCR_ZIP_URL) -o icons.zip
-
-rootfs.tar.gz: rootfs
-	@echo -e '\e[1;31mBuilding rootfs.tar.gz...\e[m'
-	cd rootfs; sudo tar -zcpf ../rootfs.tar.gz `sudo ls`
-	sudo chown `id -un` rootfs.tar.gz
-
-rootfs: base.tar.xz
-	@echo -e '\e[1;31mBuilding rootfs...\e[m'
-	mkdir rootfs
-	sudo tar -xpf base.tar.xz -C rootfs
-	sudo cp -f /etc/resolv.conf rootfs/etc/resolv.conf
-	sudo chroot rootfs /sbin/xbps-install --sync --update --yes
-	sudo rm -rf `sudo find rootfs/var/cache/xbps/ -type f`
-	sudo rm rootfs/etc/resolv.conf
-	sudo chmod +x rootfs
-
-base.tar.xz:
-	@echo -e '\e[1;31mDownloading base.tar.xz...\e[m'
-	$(DLR) $(DLR_FLAGS) $(BASE_URL) -o base.tar.xz
+	@echo -e '\e[1;31mDownloading $@...\e[m'
+	$(DLR) $(DLR_FLAGS) $(LNCR_ZIP_URL) -o $@
 
 clean:
 	@echo -e '\e[1;31mCleaning files...\e[m'
-	-rm ${OUT_ZIP}
-	-rm -r ziproot
+	-rm VoidGlibc.zip VoidMusl.zip
+	-rm -r ziproot-glibc ziproot-musl
+	-rm rootfs-glibc.tar.gz rootfs-musl.tar.gz
+	-sudo rm -r rootfs-glibc rootfs-musl
+	-rm base-glibc.tar.xz base-musl.tar.xz
 	-rm Launcher.exe
 	-rm icons.zip
-	-rm rootfs.tar.gz
-	-sudo rm -r rootfs
-	-rm base.tar.gz

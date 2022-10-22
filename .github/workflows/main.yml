@@ -22,7 +22,7 @@ jobs:
       - name: Upload artifacts
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
-          artifacts="-a ./Void.zip"
+          artifacts="-a ./VoidGlibc.zip -a ./VoidMusl.zip"
           tag_name="${GITHUB_REF#refs/tags/}"
           hub release create $artifacts -m "$tag_name" "$tag_name"
         env:
