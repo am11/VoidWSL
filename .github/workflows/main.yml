@@ -17,12 +17,16 @@ jobs:
         run: sudo rm -rf "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY"
       - name: Install prerequisites
         run: sudo apt install make curl zip unzip check -qq
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
       - name: Build
-        run: make
+        run: |
+          sudo make
       - name: Upload artifacts
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
-          artifacts="-a ./VoidGlibc.zip -a ./VoidMusl.zip"
+          artifacts="-a ./void-x86_64.zip -a ./void-x86_64-musl.zip -a ./void-aarch64.zip -a void-aarch64-musl.zip"
           tag_name="${GITHUB_REF#refs/tags/}"
           hub release create $artifacts -m "$tag_name" "$tag_name"
         env:
