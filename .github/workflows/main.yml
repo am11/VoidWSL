@@ -13,16 +13,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Cleanup
         run: sudo rm -rf "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY"
+
       - name: Install prerequisites
         run: sudo apt install make curl zip unzip check -qq
-      -
-        name: Set up QEMU
+
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
+
       - name: Build
-        run: |
-          sudo make
+        run: sudo make
+
       - name: Upload artifacts
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
