@@ -1,4 +1,4 @@
-VOID_REVISION=20221001
+VOID_REVISION=20230628
 BASE_URL=https://repo-default.voidlinux.org/live/$(VOID_REVISION)
 LNCR_ZIP_URL=https://github.com/yuk7/wsldl/releases/download/22020900/icons.zip
 
