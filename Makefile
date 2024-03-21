@@ -1,4 +1,4 @@
-VOID_REVISION=20230628
+VOID_REVISION=20240314
 VOID_BASE_URL=https://repo-default.voidlinux.org/live/$(VOID_REVISION)
 LNCR_ZIP_BASE_URL=https://github.com/yuk7/wsldl/releases/download/23072600
 
