@@ -29,6 +29,7 @@ jobs:
       - name: Upload artifacts
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
+          sudo apt install -y hub
           artifacts="-a ./void-x86_64.zip -a ./void-x86_64-musl.zip -a ./void-aarch64.zip -a void-aarch64-musl.zip"
           tag_name="${GITHUB_REF#refs/tags/}"
           hub release create $artifacts -m "$tag_name" "$tag_name"
