@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cleanup
         run: sudo rm -rf "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY"
@@ -21,7 +21,7 @@ jobs:
         run: sudo apt install make curl zip unzip check -qq
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Build
         run: sudo make
