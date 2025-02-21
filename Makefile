@@ -1,6 +1,6 @@
-VOID_REVISION=20240314
+VOID_REVISION=20250202
 VOID_BASE_URL=https://repo-default.voidlinux.org/live/$(VOID_REVISION)
-LNCR_ZIP_BASE_URL=https://github.com/yuk7/wsldl/releases/download/23072600
+LNCR_ZIP_BASE_URL=https://github.com/yuk7/wsldl/releases/download/24102000
 
 .PHONY: all clean
 
